@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>VIBE STATION | Where places become music.</title>
+    <meta name="description" content="Immerse in Bollywood ambient soundscapes - Bus rides, Vintage Salons, Monsoon Rain & Morning Vibes with non-stop lo-fi music, real-time soundboards and dynamic visual scenes." />
+    
+    <!-- Cybersecurity Hardening Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' blob: https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self' https://www.googleapis.com https://www.youtube.com;" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', '-apple-system', 'sans-serif'],
+              heading: ['Outfit', 'sans-serif'],
+              display: ['Rozha One', 'serif']
+            },
+            colors: {
+              slate: {
+                950: '#090a0f'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts with SRI & Crossorigin Protection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet" crossorigin="anonymous">
+    
+    <!-- High-End Equalizer Soundwave Glass Badge Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23090a0f'/><rect x='20' y='38' width='9' height='34' rx='4.5' fill='%2338bdf8'/><rect x='36' y='22' width='9' height='50' rx='4.5' fill='%23fbbf24'/><rect x='52' y='30' width='9' height='42' rx='4.5' fill='%23f97316'/><rect x='68' y='42' width='9' height='30' rx='4.5' fill='%2306b6d4'/></svg>" />
+  </head>
+  <body class="bg-slate-950 text-white min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
