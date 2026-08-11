@@ -69,13 +69,20 @@ export default function DedicatedEnv({
     };
   }, []);
 
-  // Fluctuating live environment listener count simulation
-  const [listenersCount, setListenersCount] = useState(() => {
-    if (env.id === 'bus') return 332;
-    if (env.id === 'salon') return 189;
-    if (env.id === 'rain') return 412;
-    return 275;
-  });
+  // Base listener count per environment
+  const BASE_LISTENERS = {
+    bus: 332,
+    salon: 189,
+    rain: 412,
+    morning: 275
+  };
+
+  // Sync listener count when environment changes
+  const [listenersCount, setListenersCount] = useState(() => BASE_LISTENERS[env.id] || 300);
+
+  useEffect(() => {
+    setListenersCount(BASE_LISTENERS[env.id] || 300);
+  }, [env.id]);
 
   useEffect(() => {
     const interval = setInterval(() => {

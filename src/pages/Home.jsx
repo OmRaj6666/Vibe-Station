@@ -13,12 +13,22 @@ export default function Home({
   onSectionScroll 
 }) {
   const sectionRefs = useRef([]);
-  const [listenerCount, setListenerCount] = useState(324);
+  const [listenerCounts, setListenerCounts] = useState({
+    bus: 332,
+    salon: 189,
+    rain: 412,
+    morning: 275
+  });
 
-  // Fluctuating real-time highway listener count simulation
+  // Fluctuating real-time listener count simulation per environment
   useEffect(() => {
     const interval = setInterval(() => {
-      setListenerCount(prev => prev + (Math.random() > 0.5 ? 1 : -1));
+      setListenerCounts(prev => ({
+        bus: prev.bus + (Math.random() > 0.5 ? 1 : -1),
+        salon: prev.salon + (Math.random() > 0.5 ? 1 : -1),
+        rain: prev.rain + (Math.random() > 0.5 ? 1 : -1),
+        morning: prev.morning + (Math.random() > 0.5 ? 1 : -1)
+      }));
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -96,7 +106,7 @@ export default function Home({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  <span>{listenerCount} live listeners</span>
+                  <span>{listenerCounts[env.id] || 300} {env.listenerLabel ? env.listenerLabel.replace(/^\d+\s*/, '') : 'live listeners'}</span>
                 </div>
               </div>
 
