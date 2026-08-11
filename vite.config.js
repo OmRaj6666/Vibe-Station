@@ -5,9 +5,10 @@ const devApiPlugin = () => ({
   name: 'dev-api-middleware',
   configureServer(server) {
     server.middlewares.use(async (req, res, next) => {
-      if (req.url.startsWith('/api/heartbeat')) {
+      const urlPath = req.url ? req.url.split('?')[0] : '';
+      if (urlPath === '/api/listeners/heartbeat' || urlPath === '/api/heartbeat') {
         try {
-          const { default: handler } = await import('./api/heartbeat.js');
+          const { default: handler } = await import('./api/listeners/heartbeat.js');
           let body = '';
           req.on('data', chunk => { body += chunk; });
           req.on('end', async () => {
@@ -24,9 +25,9 @@ const devApiPlugin = () => ({
         } catch (e) {
           console.error('Dev API Error (heartbeat):', e);
         }
-      } else if (req.url.startsWith('/api/listeners')) {
+      } else if (urlPath === '/api/listeners/count' || urlPath === '/api/listeners') {
         try {
-          const { default: handler } = await import('./api/listeners.js');
+          const { default: handler } = await import('./api/listeners/count.js');
           res.status = (code) => { res.statusCode = code; return res; };
           res.json = (data) => {
             res.setHeader('Content-Type', 'application/json');
@@ -36,7 +37,7 @@ const devApiPlugin = () => ({
           await handler(req, res);
           return;
         } catch (e) {
-          console.error('Dev API Error (listeners):', e);
+          console.error('Dev API Error (listeners/count):', e);
         }
       }
       next();

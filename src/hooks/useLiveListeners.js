@@ -39,7 +39,10 @@ export function useLiveListeners(activeEnvId = null) {
   // Fetch active listener counts from serverless API
   const fetchCounts = async () => {
     try {
-      const response = await fetch('/api/listeners');
+      let response = await fetch('/api/listeners/count');
+      if (!response.ok) {
+        response = await fetch('/api/listeners');
+      }
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const data = await response.json();
 
@@ -66,7 +69,7 @@ export function useLiveListeners(activeEnvId = null) {
   const sendHeartbeat = async (envId, prevEnvId) => {
     if (!envId) return;
     try {
-      await fetch('/api/heartbeat', {
+      let res = await fetch('/api/listeners/heartbeat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,6 +78,17 @@ export function useLiveListeners(activeEnvId = null) {
           previousEnvironmentId: prevEnvId || undefined
         })
       });
+      if (!res.ok) {
+        await fetch('/api/heartbeat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            listenerId: listenerIdRef.current,
+            environmentId: envId,
+            previousEnvironmentId: prevEnvId || undefined
+          })
+        });
+      }
     } catch (err) {
       console.warn('Live listener heartbeat failed:', err.message);
     }
