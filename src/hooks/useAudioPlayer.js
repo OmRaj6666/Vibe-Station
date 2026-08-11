@@ -28,30 +28,47 @@ export function useAudioPlayer() {
   const activeEnvIdRef = useRef(activeEnvId);
   activeEnvIdRef.current = activeEnvId;
 
+  const isShuffleRef = useRef(isShuffle);
+  isShuffleRef.current = isShuffle;
+
+  const isRepeatRef = useRef(isRepeat);
+  isRepeatRef.current = isRepeat;
+
+  const trackIndexRef = useRef(trackIndex);
+  trackIndexRef.current = trackIndex;
+
+  const playlistRef = useRef(playlist);
+  playlistRef.current = playlist;
+
   const handleNextTrackRef = useRef();
 
   const handleNextTrackAuto = () => {
-    if (playlist.length === 0) return;
+    const list = playlistRef.current;
+    const curIdx = trackIndexRef.current;
+    if (!list || list.length === 0) return;
 
-    let nextIdx = (trackIndex + 1) % playlist.length;
-    if (isShuffle) {
-      nextIdx = Math.floor(Math.random() * playlist.length);
-    }
-    if (isRepeat) {
-      nextIdx = trackIndex;
+    let nextIdx = (curIdx + 1) % list.length;
+
+    if (isRepeatRef.current) {
+      nextIdx = curIdx;
+    } else if (isShuffleRef.current && list.length > 1) {
+      // Select a random track index different from current track index
+      do {
+        nextIdx = Math.floor(Math.random() * list.length);
+      } while (nextIdx === curIdx);
     }
 
     setTrackIndex(nextIdx);
-    const nextTrack = playlist[nextIdx];
+    const nextTrack = list[nextIdx];
 
-    // Change background scene on Next button click OR every 2 songs played automatically!
-    const newCounter = songCounter + 1;
-    setSongCounter(newCounter);
+    setSongCounter(prev => prev + 1);
 
     setSceneIndices(prev => {
-      const curScene = prev[activeEnvId] || 0;
-      const nextScene = (curScene + 1) % activeEnv.scenes.length;
-      return { ...prev, [activeEnvId]: nextScene };
+      const currentEnv = activeEnvIdRef.current;
+      const envObj = ENVIRONMENTS.find(e => e.id === currentEnv) || ENVIRONMENTS[0];
+      const curScene = prev[currentEnv] || 0;
+      const nextScene = (curScene + 1) % envObj.scenes.length;
+      return { ...prev, [currentEnv]: nextScene };
     });
 
     playTrack(nextTrack, true);
@@ -172,15 +189,26 @@ export function useAudioPlayer() {
   };
 
   const handlePrevTrack = () => {
-    if (playlist.length === 0) return;
-    const prevIdx = (trackIndex - 1 + playlist.length) % playlist.length;
+    const list = playlistRef.current;
+    const curIdx = trackIndexRef.current;
+    if (!list || list.length === 0) return;
+
+    let prevIdx = (curIdx - 1 + list.length) % list.length;
+    if (isShuffleRef.current && list.length > 1) {
+      do {
+        prevIdx = Math.floor(Math.random() * list.length);
+      } while (prevIdx === curIdx);
+    }
+
     setTrackIndex(prevIdx);
-    const prevTrack = playlist[prevIdx];
+    const prevTrack = list[prevIdx];
 
     setSceneIndices(prev => {
-      const curScene = prev[activeEnvId] || 0;
-      const prevScene = (curScene - 1 + activeEnv.scenes.length) % activeEnv.scenes.length;
-      return { ...prev, [activeEnvId]: prevScene };
+      const currentEnv = activeEnvIdRef.current;
+      const envObj = ENVIRONMENTS.find(e => e.id === currentEnv) || ENVIRONMENTS[0];
+      const curScene = prev[currentEnv] || 0;
+      const prevScene = (curScene - 1 + envObj.scenes.length) % envObj.scenes.length;
+      return { ...prev, [currentEnv]: prevScene };
     });
 
     playTrack(prevTrack, isPlaying);
