@@ -6,6 +6,8 @@ import AmbientParticles from '../components/AmbientParticles';
 import Footer from '../components/Footer';
 import { Play, ArrowDown, ChevronRight } from 'lucide-react';
 
+import { useLiveListeners } from '../hooks/useLiveListeners';
+
 export default function Home({ 
   onSelectEnv, 
   onHoverEnv, 
@@ -13,25 +15,7 @@ export default function Home({
   onSectionScroll 
 }) {
   const sectionRefs = useRef([]);
-  const [listenerCounts, setListenerCounts] = useState({
-    bus: 1420,
-    salon: 890,
-    rain: 2150,
-    morning: 1780
-  });
-
-  // Smooth real-time listener count simulation per environment
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setListenerCounts(prev => ({
-        bus: prev.bus + (Math.floor(Math.random() * 3) - 1),
-        salon: prev.salon + (Math.floor(Math.random() * 3) - 1),
-        rain: prev.rain + (Math.floor(Math.random() * 3) - 1),
-        morning: prev.morning + (Math.floor(Math.random() * 3) - 1)
-      }));
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
+  const { counts } = useLiveListeners();
 
   // IntersectionObserver to detect current active section on scroll & trigger audio/visual crossfade
   useEffect(() => {
@@ -106,7 +90,7 @@ export default function Home({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  <span>{(listenerCounts[env.id] || 1200).toLocaleString()} {env.listenerLabel ? env.listenerLabel.replace(/^\d+\s*/, '') : 'live listeners'}</span>
+                  <span>{(counts[env.id] || 0).toLocaleString()} {env.listenerLabel || 'live listeners'}</span>
                 </div>
               </div>
 
