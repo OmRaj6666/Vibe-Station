@@ -14,22 +14,22 @@ export default function Home({
 }) {
   const sectionRefs = useRef([]);
   const [listenerCounts, setListenerCounts] = useState({
-    bus: 332,
-    salon: 189,
-    rain: 412,
-    morning: 275
+    bus: 1420,
+    salon: 890,
+    rain: 2150,
+    morning: 1780
   });
 
-  // Fluctuating real-time listener count simulation per environment
+  // Smooth real-time listener count simulation per environment
   useEffect(() => {
     const interval = setInterval(() => {
       setListenerCounts(prev => ({
-        bus: prev.bus + (Math.random() > 0.5 ? 1 : -1),
-        salon: prev.salon + (Math.random() > 0.5 ? 1 : -1),
-        rain: prev.rain + (Math.random() > 0.5 ? 1 : -1),
-        morning: prev.morning + (Math.random() > 0.5 ? 1 : -1)
+        bus: prev.bus + (Math.floor(Math.random() * 3) - 1),
+        salon: prev.salon + (Math.floor(Math.random() * 3) - 1),
+        rain: prev.rain + (Math.floor(Math.random() * 3) - 1),
+        morning: prev.morning + (Math.floor(Math.random() * 3) - 1)
       }));
-    }, 4000);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -106,7 +106,7 @@ export default function Home({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  <span>{listenerCounts[env.id] || 300} {env.listenerLabel ? env.listenerLabel.replace(/^\d+\s*/, '') : 'live listeners'}</span>
+                  <span>{(listenerCounts[env.id] || 1200).toLocaleString()} {env.listenerLabel ? env.listenerLabel.replace(/^\d+\s*/, '') : 'live listeners'}</span>
                 </div>
               </div>
 

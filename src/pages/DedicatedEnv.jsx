@@ -5,6 +5,7 @@ import AmbientParticles from '../components/AmbientParticles';
 import ParallaxLayer from '../components/ParallaxLayer';
 import MusicPlayer from '../components/MusicPlayer';
 import Footer from '../components/Footer';
+import { useLiveListeners } from '../hooks/useLiveListeners';
 import { Volume2, Clock, VolumeX, Wind, Scissors, CloudRain, Zap, Bird, Sun, ChevronLeft } from 'lucide-react';
 
 export default function DedicatedEnv({
@@ -69,27 +70,8 @@ export default function DedicatedEnv({
     };
   }, []);
 
-  // Base listener count per environment
-  const BASE_LISTENERS = {
-    bus: 332,
-    salon: 189,
-    rain: 412,
-    morning: 275
-  };
-
-  // Sync listener count when environment changes
-  const [listenersCount, setListenersCount] = useState(() => BASE_LISTENERS[env.id] || 300);
-
-  useEffect(() => {
-    setListenersCount(BASE_LISTENERS[env.id] || 300);
-  }, [env.id]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setListenersCount(prev => prev + (Math.random() > 0.5 ? 1 : -1));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  // Accurate live environment listener count synchronization
+  const { formattedCount: listenersFormatted } = useLiveListeners(env.id);
 
   // Stop all ambient/horn/scissors/dryer/rain/morning sound effects
   const stopAllSounds = () => {
@@ -389,7 +371,7 @@ export default function DedicatedEnv({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-emerald-500"></span>
             </span>
-            <span>{listenersCount} {env.listenerLabel ? env.listenerLabel.replace(/^\d+\s*/, '') : 'live listeners'}</span>
+            <span>{listenersFormatted} {env.listenerLabel ? env.listenerLabel.replace(/^\d+\s*/, '') : 'live listeners'}</span>
           </div>
 
           {/* Integrated Apple Glass Soundboard Widget */}
